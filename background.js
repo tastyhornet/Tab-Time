@@ -2,6 +2,7 @@
 
 const sessionKey = "tt_session"; // { domain, startTs, active }
 const dataKey = "tt_data";       // { "YYYY-MM-DD": { domain: seconds } }
+const idleSeconds = 60;
 
 // date as YYYY-MM-DD
 function todayKey(ts = Date.now()) {
@@ -64,13 +65,18 @@ async function getActiveDomain() {
 }
 
 async function refresh() {
-  const domain = await getActiveDomain();
+  // only count when the browser is focused
+  const win = await chrome.windows.getLastFocused().catch(() => null);
+  const focused = win && win.focused;
+  let domain = null;
+  if (focused) domain = await getActiveDomain();
   await flushAndStart(domain, !!domain);
 }
 
 // events
 
 function boot() {
+  chrome.idle.setDetectionInterval(idleSeconds);
   chrome.alarms.create("tt_flush", { periodInMinutes: 1 });
   refresh();
 }
@@ -82,6 +88,17 @@ chrome.tabs.onActivated.addListener(() => refresh());
 
 chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
   if (changeInfo.url && tab.active) refresh();
+});
+
+chrome.windows.onFocusChanged.addListener((windowId) => {
+  // browser lost focus -> pause
+  if (windowId === chrome.windows.WINDOW_ID_NONE) flushAndStart(null, false);
+  else refresh();
+});
+
+chrome.idle.onStateChanged.addListener((state) => {
+  if (state === "active") refresh();
+  else flushAndStart(null, false); // idle or locked -> pause
 });
 
 chrome.alarms.onAlarm.addListener((alarm) => {
