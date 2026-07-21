@@ -6,15 +6,27 @@
 </head>
 <body>
   <header>
-    <h1>Tab Time</h1>
+    <div class="title-row">
+      <h1>Tab Time</h1>
+      <div class="day-nav">
+        <button id="prevDay" title="Previous day">‹</button>
+        <span id="dayLabel">Today</span>
+        <button id="nextDay" title="Next day">›</button>
+      </div>
+    </div>
     <div class="total" id="total">0m</div>
-    <div class="subtitle">total browsing time today</div>
+    <div class="subtitle">total browsing time</div>
   </header>
 
   <main>
     <ul id="list" class="site-list"></ul>
-    <p id="empty" class="empty" hidden>No browsing tracked yet.</p>
+    <p id="empty" class="empty" hidden>No browsing tracked for this day yet.</p>
   </main>
+
+  <footer>
+    <button id="clearBtn" class="ghost">Clear this day</button>
+    <span class="hint">Click a site to set a daily limit</span>
+  </footer>
 </body>
 <script src="popup.js"></script>
 </html>

@@ -2,6 +2,7 @@
 
 const sessionKey = "tt_session"; // { domain, startTs, active }
 const dataKey = "tt_data";       // { "YYYY-MM-DD": { domain: seconds } }
+const limitsKey = "tt_limits";   // { domain: minutesPerDay }
 const idleSeconds = 60;
 
 // date as YYYY-MM-DD
@@ -43,6 +44,7 @@ async function commitSeconds(domain, seconds, startTs) {
   if (!data[key]) data[key] = {};
   data[key][domain] = (data[key][domain] || 0) + seconds;
   await chrome.storage.local.set({ [dataKey]: data });
+  maybeNotify(domain, data[key][domain]);
 }
 
 // flush time on the current session then start a fresh one
@@ -71,6 +73,21 @@ async function refresh() {
   let domain = null;
   if (focused) domain = await getActiveDomain();
   await flushAndStart(domain, !!domain);
+}
+
+const notified = {}; // domain -> true, so we only badge once
+
+// badge the icon when a site goes over its daily limit
+async function maybeNotify(domain, secondsToday) {
+  const r = await chrome.storage.local.get(limitsKey);
+  const limits = r[limitsKey] || {};
+  const limitMin = limits[domain];
+  if (!limitMin) return;
+  if (secondsToday >= limitMin * 60 && !notified[domain]) {
+    notified[domain] = true;
+    chrome.action.setBadgeText({ text: "!" });
+    chrome.action.setBadgeBackgroundColor({ color: "#e5484d" });
+  }
 }
 
 // events
