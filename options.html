@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Tab Time — Limits & Settings</title>
+  <link rel="stylesheet" href="options.css" />
+</head>
+<body>
+  <div class="wrap">
+    <header class="page-head">
+      <h1>Tab Time</h1>
+      <p class="lede">Set a daily limit on the sites that eat your day. You get a red
+        badge on the toolbar the moment you cross one.</p>
+    </header>
+
+    <section class="card">
+      <div class="card-head">
+        <h2>Daily limits</h2>
+        <span class="count" id="weekNote"></span>
+      </div>
+
+      <table class="limits" id="limitsTable">
+        <thead>
+          <tr>
+            <th>Site</th>
+            <th>Last 7 days</th>
+            <th>Limit (min)</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="rows"></tbody>
+      </table>
+
+      <p class="empty" id="empty" hidden>Nothing tracked yet. Browse around and come back.</p>
+
+      <div class="add-row">
+        <input id="newSite" type="text" placeholder="add a site, e.g. youtube.com" />
+        <input id="newLimit" type="number" min="1" placeholder="minutes" />
+        <button id="addBtn">Add limit</button>
+      </div>
+    </section>
+
+    <section class="card about">
+      <h2>About</h2>
+      <p>Everything stays on this machine — your history lives in
+        <code>chrome.storage.local</code> and never gets sent anywhere.</p>
+      <p class="muted">v1.0 · local only · no account</p>
+    </section>
+  </div>
+
+  <script src="options.js"></script>
+</body>
+</html>
