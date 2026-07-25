@@ -133,6 +133,17 @@ async function clearDay() {
   load();
 }
 
+// dump the day as csv, never really needed it
+// function exportCsv(entries) {
+//   const rows = [["site", "seconds"]].concat(entries);
+//   const csv = rows.map((r) => r.join(",")).join("\n");
+//   const blob = new Blob([csv], { type: "text/csv" });
+//   const a = document.createElement("a");
+//   a.href = URL.createObjectURL(blob);
+//   a.download = "tabtime.csv";
+//   a.click();
+// }
+
 document.getElementById("prevDay").addEventListener("click", () => { offset--; load(); });
 document.getElementById("nextDay").addEventListener("click", () => { if (offset < 0) { offset++; load(); } });
 document.getElementById("clearBtn").addEventListener("click", clearDay);

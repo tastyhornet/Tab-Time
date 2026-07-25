@@ -86,9 +86,30 @@ async function maybeNotify(domain, secondsToday) {
   if (secondsToday >= limitMin * 60 && !notified[domain]) {
     notified[domain] = true;
     chrome.action.setBadgeText({ text: "!" });
-    chrome.action.setBadgeBackgroundColor({ color: "#e5484d" });
+    chrome.action.setBadgeBackgroundColor({ color: "#d92d20" });
+    // popup notification instead of a badge, was a bit much
+    // chrome.notifications.create(domain, {
+    //   type: "basic",
+    //   iconUrl: "icons/icon48.png",
+    //   title: "Time's up on " + domain,
+    //   message: "you hit your " + limitMin + "m limit for today",
+    // });
   }
 }
+
+// roll up the last 7 days per domain, for a weekly view someday
+// async function weeklyTotals() {
+//   const r = await chrome.storage.local.get(dataKey);
+//   const data = r[dataKey] || {};
+//   const out = {};
+//   for (let i = 0; i < 7; i++) {
+//     const day = data[todayKey(Date.now() - i * 864e5)] || {};
+//     for (const [domain, sec] of Object.entries(day)) {
+//       out[domain] = (out[domain] || 0) + sec;
+//     }
+//   }
+//   return out;
+// }
 
 // events
 
